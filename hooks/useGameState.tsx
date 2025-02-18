@@ -109,7 +109,19 @@ export const useGameState = (initialBoard: number[][]) => {
   };
   
   const handleReset = useCallback(() => {
-    setBoard([...initialBoard]);
+    // Create a new board with zeros
+    const resetBoard = Array(9).fill(0).map(() => Array(9).fill(0));
+    
+    // Restore only the initial numbers
+    board.forEach((row, i) => {
+      row.forEach((num, j) => {
+        if (initialNumbers.has(`${i},${j}`)) {
+          resetBoard[i][j] = board[i][j];
+        }
+      });
+    });
+  
+    setBoard(resetBoard);
     setNotes(Array(9).fill(null).map(() => 
       Array(9).fill(null).map(() => 
         new Set<number>()
@@ -118,40 +130,41 @@ export const useGameState = (initialBoard: number[][]) => {
     setMoveHistory([]);
     setSelectedCell(null);
     setIsNoteMode(false);
-  }, [initialBoard]);
+    setIsShiftHeld(false);
+  }, [board, initialNumbers]);
   
-    const handleDelete = useCallback(() => {
-        if (!selectedCell) return;
-        const { row, col } = selectedCell;
-        
-        // Don't delete initial numbers
-        if (initialNumbers.has(`${row},${col}`)) return;
+  const handleDelete = useCallback(() => {
+      if (!selectedCell) return;
+      const { row, col } = selectedCell;
       
-        const move: Move = {
-          row,
-          col,
-          prevValue: board[row][col],
-          newValue: 0,
-          prevNotes: new Set(notes[row][col]),
-          newNotes: new Set()
-        };
-      
-        const newBoard = board.map((r, i) =>
-          i === row ? r.map((cell, j) => 
-            j === col ? 0 : cell
-          ) : r
-        );
-      
-        const newNotesGrid = notes.map((r, i) =>
-          i === row ? r.map((cell, j) => 
-            j === col ? new Set<number>() : cell
-          ) : r
-        );
-      
-        setBoard(newBoard);
-        setNotes(newNotesGrid);
-        setMoveHistory([...moveHistory, move]);
-      }, [selectedCell, initialNumbers, board, notes, moveHistory]);
+      // Don't delete initial numbers
+      if (initialNumbers.has(`${row},${col}`)) return;
+    
+      const move: Move = {
+        row,
+        col,
+        prevValue: board[row][col],
+        newValue: 0,
+        prevNotes: new Set(notes[row][col]),
+        newNotes: new Set()
+      };
+    
+      const newBoard = board.map((r, i) =>
+        i === row ? r.map((cell, j) => 
+          j === col ? 0 : cell
+        ) : r
+      );
+    
+      const newNotesGrid = notes.map((r, i) =>
+        i === row ? r.map((cell, j) => 
+          j === col ? new Set<number>() : cell
+        ) : r
+      );
+    
+      setBoard(newBoard);
+      setNotes(newNotesGrid);
+      setMoveHistory([...moveHistory, move]);
+    }, [selectedCell, initialNumbers, board, notes, moveHistory]);
 
   return {
     board,
