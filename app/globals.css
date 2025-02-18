@@ -9,7 +9,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #323437;
     --foreground: #ededed;
   }
 }
@@ -17,5 +17,220 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+  font-size: 4vh;
+  font-weight: 500;
+  margin-top: 10vh;
+  margin-bottom: 0vh;
+}
+
+.sudoku-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 0px;
+  background-color: transparent;
+  border: 3px solid #DBB941;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.sudoku-row {
+  display: contents;
+}
+
+.sudoku-cell {
+  width: 5vh;
+  height: 5vh;
+  background-color: transparent;
+  position: relative;
+  transition: all 0.2s ease;
+  color: var(--foreground);
+  font-size: 2.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* All cells get bottom and right borders */
+.sudoku-cell::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  height: 100%;
+  background-color: #646669;
+}
+
+.sudoku-cell::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #646669;
+}
+
+/* Vertical thick yellow lines */
+.sudoku-cell:nth-child(3)::before,
+.sudoku-cell:nth-child(6)::before {
+  width: 2px;
+  background-color: #DBB941;
+  z-index: 2;
+}
+
+/* Horizontal thick yellow lines */
+.sudoku-row:nth-child(3) .sudoku-cell::after,
+.sudoku-row:nth-child(6) .sudoku-cell::after {
+  height: 2px;
+  background-color: #DBB941;
+  z-index: 2;
+}
+
+.sudoku-cell span {
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.sudoku-cell span.initial-number {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.sudoku-cell span.placed-number {
+  color: #DBB941;
+  font-weight: 400;
+}
+
+/* Hover effects */
+.sudoku-cell:hover {
+  background-color: rgba(219, 185, 65, 0.3) !important;
+  cursor: pointer;
+}
+
+.sudoku-cell:hover span {
+  transform: scale(1.2);
+}
+
+/* Selected effected (Highlights) */
+.sudoku-cell.selected {
+  background-color: rgba(219, 185, 65, 0.3);
+}
+
+.sudoku-cell.highlighted {
+  background-color: rgba(219, 185, 65, 0.1);
+}
+
+.sudoku-cell.selected span {
+  transform: scale(1.2);
+}
+
+/* Notes grid inside cell */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  position: absolute;
+  inset: 0;
+  font-size: 1.2vh;
+  color: #646669;
+}
+
+.note-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Notes grid inside cell */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  position: absolute;
+  inset: 0;
+  font-size: 1.1vh;
+  color: #ffffff;
+  margin-top: -1px;
+  margin-left: -1px;
+  margin-bottom: 1;
+  margin-right: 1;
+}
+
+.note-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure notes don't scale with hover */
+.sudoku-cell:hover .notes-grid {
+  transform: none;
+}
+
+.sudoku-cell.selected .notes-grid {
+  transform: none;
+}
+
+/* Button styles */
+button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.newGameButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #DBB941;
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+}
+
+.newGameButton:hover:not(:disabled) {
+  background-color: #c5a73a;
+}
+
+.notesButton {
+  background-color: #DBB941;
+}
+
+.notesButton:hover:not(:disabled),
+.notesButtonActive {
+  background-color: #c5a73a;
+}
+
+.undoButton {
+  background-color: #646669;
+}
+
+.undoButton:hover:not(:disabled) {
+  background-color: #4e4f51;
+}
+
+.resetButton {
+  background-color: #8B0000;
+}
+
+.resetButton:hover:not(:disabled) {
+  background-color: #6d0000;
 }
